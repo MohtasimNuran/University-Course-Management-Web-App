@@ -1,0 +1,111 @@
+﻿@model UniversityManagementMVC.Models.Course
+
+@{
+    ViewBag.Title = "SaveCourse";
+}
+
+<style>
+    label.error {
+        color: #dc143c;
+        font-weight: bold;
+    }
+</style>
+
+<h2>SaveCourse</h2>
+    @Html.AntiForgeryToken()
+    <form id="myForm" method="POST">
+        <div class="form-horizontal">
+            <h4>Course</h4>
+            <hr />
+            <h4>@ViewBag.Msg</h4>
+            @Html.ValidationSummary(true)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Code, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.Code, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Code)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Name)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Credit, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.Credit, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Credit)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.Description, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Description)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.DepartmentId, "DepartmentId", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("DepartmentId", "...Select One...")
+                    @Html.ValidationMessageFor(model => model.DepartmentId)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Semester, "Semester", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @*@Html.EditorFor(model => model.Semester)*@
+                    @Html.DropDownList("Semester", "...Select One...")
+                    @Html.ValidationMessageFor(model => model.Semester)
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    </form>
+<script src="~/Scripts/jquery-3.0.0.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#myForm").validate({
+            rules: {
+                Code: {
+                    required: true,
+                    minlength: 5
+                },
+                Name: "required",
+                Credit: {
+                    required: true,
+                    number: true,
+                    range: [0.5, 5.0]
+                },
+                DepartmentId: "required",
+                Semester: "required"
+            },
+            messages: {
+                Code: "Enter Course Code",
+                Name: "Enter Course Name",
+                Credit: "Please provide Course",
+                DepartmentId: "required",
+                Semester: "required"
+            }
+        });
+    });
+</script>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

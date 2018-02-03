@@ -1,0 +1,107 @@
+﻿@model UniversityManagementMVC.Models.SaveStudentResult
+@{
+    ViewBag.Title = "Enroll";
+}
+<div class="form-horizontal">
+    <h2>View Student Result</h2>
+
+    <hr>
+    <table>
+        <tr>
+            <td>
+                <label>Student RegNo.</label>
+            </td>
+            <td>
+                @Html.DropDownListFor(x => x.Students, Model.Students, "---Select One---", new { @id = "StudentId", @class = "form-control" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Name</label>
+            </td>
+            <td id="Names">
+                @Html.TextBoxFor(model => model.Names, new { @id = "Name", @class = "form-control", @readonly = "readonly" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Email</label>
+            </td>
+            <td id="Emails">
+                @Html.TextBoxFor(model => model.Emails, new { @id = "Email", @class = "form-control", @readonly = "readonly" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Department</label>
+            </td>
+            <td id="Departments">
+                @Html.TextBoxFor(model => model.Departments, new { @id = "Department", @class = "form-control", @readonly = "readonly" })
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input id="assignButtonId" type="button" value="Make PDF" class="btn btn-info" />
+                @*<input type="submit" value="SaveResult" class="btn btn-default" />*@
+            </td>
+        </tr>
+    </table>
+    <table class="table table-hover" id="viewTable">
+        <tr>
+            <th>
+                Course Code
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Grade
+            </th>
+        </tr>
+    </table>
+
+</div>
+<script src="~/Scripts/jquery-3.0.0.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('#StudentId').change(function () {
+            var stdId = $("#StudentId").val();
+            $.getJSON("/ViewResult/GetStudentName", { StudentId: stdId },
+                function (name) {
+                    $("#Name").val(name);
+                });
+            $.getJSON("/ViewResult/GetStudentEmail", { StudentId: stdId },
+                function (name) {
+                    $("#Email").val(name);
+                });
+            $.getJSON("/ViewResult/GetStudentDepartment", { StudentId: stdId },
+                function (name) {
+                    $("#Department").val(name);
+                });
+        });
+        $('#StudentId').change(function () {
+            var deptId = $("#StudentId").val();
+            $("#viewTable").empty();
+            $.getJSON("/ViewResult/GetResultView", { StudentId: deptId },
+                function (view) {
+                    $("#viewTable").append('<table class="table table-bordered table-hover"><tr><th>' + "Course Code" + '</th><th>' + "Name" + '</th><th>' + "Grade" + '</th></tr></table>');
+                    $.each(view, function (key, value) {
+                        $("#viewTable").append('<tr><td>' + value.Code + '</td><td>' + value.Name + '</td><td>' + value.Grade +'</td></tr>');
+                        
+                    });
+                });
+        });
+        $('#assignButtonId').click(function () {
+            
+            $.getJSON("/ViewResult/GeneratePdf",
+            function (saved) {
+                alert(saved);
+
+            });
+        });
+
+    });
+</script>

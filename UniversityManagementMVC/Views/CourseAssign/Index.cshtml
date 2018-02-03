@@ -1,0 +1,266 @@
+﻿@model UniversityManagementMVC.Models.CourseAssign
+@{
+    ViewBag.Title = "Index";
+}
+<div class="form-horizontal">
+    <h2>Course Assign to Teacher</h2>
+
+    <hr>
+    <table>
+        <tr>
+            <td>
+                <label>Department</label>
+            </td>
+            <td>
+                @Html.DropDownListFor(x => x.Departments, Model.Departments, "---Select One---", new {@id = "departmentId", @class = "form-control"})
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Teacher</label>
+            </td>
+            <td id="Teacher">
+                @Html.DropDownListFor(x => x.Teachers, new List<SelectListItem>(), "---Select One---", new {@id = "teacherId", @class = "form-control"})
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Credit to be Taken</label>
+            </td>
+            <td id="TeacherCredit">
+                @Html.TextBoxFor(model => model.CreditToBeTaken, new {@id = "teacherCreditId", @class = "form-control", @readonly = "readonly"})
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Remaining Credit</label>
+            </td>
+            <td id="RemainingCredi">
+                @Html.TextBoxFor(model => model.RemainingCredit, new {@id = "RemainingCredit", @class = "form-control", @readonly = "readonly"})
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Course</label>
+            </td>
+            <td id="Course">
+                @Html.DropDownListFor(x => x.Courses, new List<SelectListItem>(), "---Select One---", new {@id = "courseId", @class = "form-control"})
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Name</label>
+            </td>
+            <td id="CourseName">
+                @Html.TextBoxFor(model => model.CourseName, new {@id = "courseNameId", @class = "form-control", @readonly = "readonly"})
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Credit</label>
+            </td>
+            <td id="CourseCredit">
+                @Html.TextBoxFor(model => model.CourseCredit, new {@id = "courseCreditId", @class = "form-control", @readonly = "readonly"})
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input id="assignButtonId" type="button" value="Assign" class="btn btn-info"/>
+            </td>
+        </tr>
+    </table>
+</div>
+<script src="~/Scripts/jquery-3.0.0.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#departmentId").change(function () {
+
+            var departmentId = $("#departmentId").val();
+            $("#courseId").empty();
+            var json = { departmentId: departmentId };
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetCourse", "CourseAssign")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json),
+                success: function (data) {
+                    //alert(data);
+                    $("#courseId").append('<option>' + "---Select One---" + '</option>');
+                    $.each(data, function (key, value) {
+                        //alert(key);
+                        $("#courseId").append('<option value=' + value.Value + '>' + value.Text + '</option>');
+
+                    });
+                }
+            });
+        });
+        $("#departmentId").change(function () {
+
+            var departmentId = $("#departmentId").val();
+            $("#teacherId").empty();
+            var json = { departmentId: departmentId };
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetTeacher", "CourseAssign")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json),
+                success: function (data) {
+                    //alert(data);
+                    $("#teacherId").append('<option>' + "---Select One---" + '</option>');
+                    $.each(data, function (key, value) {
+                        //alert(key);
+                        $("#teacherId").append('<option value=' + value.Value + '>' + value.Text + '</option>');
+
+                    });
+                }
+            });
+        });
+        $('#teacherId').change(function () {
+            var teachId = $("#teacherId").val();
+            $.getJSON("/CourseAssign/GetCreditByteacherId", { teacherId: teachId },
+                function (getCredit) {
+                    $("#teacherCreditId").val(getCredit);
+                });
+        });
+        $('#teacherId').change(function () {
+            var teachId = $("#teacherId").val();
+            var teachCreditId = $("#teacherCreditId").val();
+            $.getJSON("/CourseAssign/GetRemainingCreditFromCousreAssign", { teacherId: teachId, teacherCreditId: teachCreditId },
+                function (remain) {
+                    $("#RemainingCredit").val(remain);
+                });
+        });
+        $('#courseId').change(function () {
+            var coursId = $("#courseId").val();
+            $.getJSON("/CourseAssign/GetCourseNameByCourseId", { courseId: coursId },
+                function (getCourseName) {
+                    $("#courseNameId").val(getCourseName);
+                });
+        });
+        $('#courseId').change(function () {
+            var teachrCre = $("#teacherCreditId").val();
+            var coursId = $("#courseId").val();
+            var remainCredit = $("#RemainingCredit").val();
+            $.getJSON("/CourseAssign/GetCourseCreditByCourseId", { courseId: coursId },
+                function (getCourseCredit) {
+                    $("#courseCreditId").val(getCourseCredit);
+                    $("#RemainingCredit").val(remainCredit - getCourseCredit);
+
+                });
+        });
+        $('#courseId').change(function () {
+            $("#courseId").prop('disabled','disabled');
+
+        });
+        
+        $('#assignButtonId').click(function (e) {
+            window.location.reload();
+            var deptId = $("#departmentId").val();
+            var techId = $("#teacherId").val();
+            var coursId = $("#courseId").val();
+            var remainId = $("#RemainingCredit").val();
+            var creditTaken = $("#teacherCreditId").val();
+            if (remainId < 0) {
+                var result = window.confirm("Are you sure?");
+                if (result == true) {
+                    $.getJSON("/CourseAssign/SaveCourseAssignToTeacher", { departmentId: deptId, teacherId: techId, courseId: coursId, RemainingCredit: remainId },
+                    function (saved) {
+                        alert(saved);
+                      });
+                }
+                else if (result == false) {
+                    e.preventDefault();
+                }
+            }
+            else if (remainId > 0) {
+                $.getJSON("/CourseAssign/SaveCourseAssignToTeacher", { departmentId: deptId, teacherId: techId, courseId: coursId, RemainingCredit: remainId },
+                    function (saved) {
+                        alert(saved);
+                    });
+            }
+        });
+    });
+
+
+
+
+
+
+
+    //$(document).ready(function () {
+    //    $('#departmentId').change(function () {
+    //        $.ajax({
+    //            type: "post",
+    //            url: "/CourseAssign/GetCourse",
+    //            data: { departmentId: $('#departmentId').val() },
+    //            datatype: "json",
+    //            traditional: true,
+    //            success: function (data) {
+    //                var district = "<select id='courseId' class = 'form-control' >";
+    //                district = district + '<option value="">--Select--</option>';
+    //                for (var i = 0; i < data.length; i++) {
+    //                    district = district + '<option value=' + data[i].Value + '>' + data[i].Text + '</option>';
+    //                }
+    //                district = district + '</select>';
+    //                $('#Course').html(district);
+    //            }
+    //        });
+    //    });
+
+    //    $('#departmentId').change(function () {
+    //        $.ajax({
+    //            type: "post",
+    //            url: "/CourseAssign/GetTeacher",
+    //            data: { departmentId: $('#departmentId').val() },
+    //            datatype: "json",
+    //            traditional: true,
+    //            success: function (data) {
+    //                var district = "<select id='teacherId' class = 'form-control'>";
+    //                district = district + '<option value="">--Select--</option>';
+    //                for (var i = 0; i < data.length; i++) {
+    //                    district = district + '<option value=' + data[i].Value + '>' + data[i].Text + '</option>';
+    //                }
+    //                district = district + '</select>';
+    //                $('#Teacher').html(district);
+
+    //                        }
+    //                    });
+    //                });
+    //                $('#teacherId').change(function () {
+    //                    alert("found");
+    //                    var teachId = $("#teacherId").val();
+    //                    $.getJSON("/CourseAssign/GetCreditByteacherId", { teacherId: teachId },
+    //                        function (getCredit) {
+    //                            $("#teacherCreditId").val(getCredit);
+    //                        });
+    //                });
+    //            });
+    // });
+    //$(document).ready(function () {
+    //    $('#teacherId').change(function () {
+    //            alert("asfajhbfahb");
+    //        $.ajax({
+    //            type: "post",
+    //            url: "/CourseAssign/GetCreditByteacherId",
+    //            data: { teacherId: $('#teacherId').val() },
+    //            datatype: "json",
+    //            traditional: true,
+    //            success: function (data) {
+    //                var district = "<label id='teacherCreditId'>";
+    //                district = district + data.Value;
+
+    //                district = district + '</label>';
+    //                $('#TeacherCredit').html(district);
+    //            }
+    //        });
+    //  });
+    //});
+
+
+
+
+
+</script>

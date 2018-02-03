@@ -1,0 +1,95 @@
+﻿@model UniversityManagementMVC.Models.Student
+
+@{
+    ViewBag.Title = "RegisterStudent";
+}
+
+<h2>Register Student</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+    <div class="form-horizontal">
+        <h4>Student</h4>
+        <hr/>
+        <h4 class="validation-summary-errors">@ViewBag.Msg</h4>
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Email)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ContactNo, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ContactNo, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ContactNo)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Date, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.Date, new { @id = "datePickerId", @type="date" , @class = "datepicker-dropdown" })*@
+                @*<input id="datePickerId" type="date" class="datepicker-dropdown" />*@
+                
+                @Html.EditorFor(model => model.Date, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Date)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Address, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Address, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Address)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DepartmentId, "DepartmentId", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("DepartmentId", String.Empty)
+                @Html.ValidationMessageFor(model => model.DepartmentId)
+            </div>
+        </div>
+
+        @*<div class="form-group">
+            @Html.LabelFor(model => model.RegNo, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.RegNo)
+                @Html.ValidationMessageFor(model => model.RegNo)
+            </div>
+        </div>*@
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="RegisterStudent" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+@*<script src="~/Scripts/jquery-3.0.0.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#datePickerId").change(function () {
+                var date = $("#datePickerId").val();
+                var dd = new Date(date);
+                var year = dd.getFullYear();
+                alert(year);
+            });
+        });
+    </script>*@

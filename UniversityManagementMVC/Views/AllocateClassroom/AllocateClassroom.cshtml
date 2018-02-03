@@ -1,0 +1,109 @@
+﻿@model UniversityManagementMVC.Models.AllocateClass
+@{
+    ViewBag.Title = "Allocate Room";
+}
+<div class="form-horizontal">
+    <h2>Allocate Classrooms</h2>
+
+    <hr>
+    <table>
+        <tr>
+            <td>
+                <label>Department</label>
+            </td>
+            <td>
+                @Html.DropDownListFor(x => x.Departments, Model.Departments, "---Select One---", new { @id = "DepartmentId", @class = "form-control" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Select Course</label>
+            </td>
+            <td id="Course">
+                @Html.DropDownListFor(x => x.Courses, new List<SelectListItem>(), "---Select One---", new { @id = "CourseId", @class = "form-control" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Room No.</label>
+            </td>
+            <td id="Rooms">
+                <select id="Room" class="form-control">
+                    <option value="">---Select One---</option>
+                    @foreach (var department in ViewBag.Rooms)
+                    {
+                        <option value="@department.Room1">@department.Room1</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Day</label>
+            </td>
+            <td id="Days">
+                <select id="Day" class="form-control">
+                    <option value="">---Select One---</option>
+                    @foreach (var department in ViewBag.Days)
+                    {
+                        <option value="@department.Day1">@department.Day1</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>From</label>
+            </td>
+            <td id="frms">
+                @Html.TextBoxFor(model => model.Frms, new { @id = "Frm", @class = "form-control", @type = "time" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>To</label>
+            </td>
+            <td id="toos">
+                @Html.TextBoxFor(model => model.Toos, new { @id = "Too", @class = "form-control", @type = "time" })
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input id="assignButtonId" type="button" value="Assign" class="btn btn-info" @*onclick="location.href='@Url.Action("AllocateClassroom", "AllocateClassroom")'"*@/>
+            </td>
+        </tr>
+    </table>
+</div>
+<script src="~/Scripts/jquery-3.0.0.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#DepartmentId').change(function () {
+            var stdId = $("#DepartmentId").val();
+            $("#CourseId").empty();
+            $.getJSON("/AllocateClassroom/GetCourse", { DepartmentId: stdId },
+                function (course) {
+                    $("#CourseId").append('<option>' + "---Select One---" + '</option>');
+                    $.each(course, function (key, val) {
+                        $("#CourseId").append('<option value=' + val.Value + '>' + val.Text + '</option>');
+
+                    });
+                });
+        });
+        $('#assignButtonId').click(function (e) {
+            window.location.reload();
+            var depId = $("#DepartmentId").val();
+            var courId = $("#CourseId").val();
+            var roomId = $("#Room").val();
+            var dayId = $("#Day").val();
+            var frm = $("#Frm").val();
+            var too = $("#Too").val();
+            $.getJSON("/AllocateClassroom/Allocate", { DepartmentId: depId, CourseId: courId, Room: roomId, Day: dayId, Frm: frm, Too: too },
+            function (saved) {
+                alert(saved);
+                //window.location.reload();
+            });
+        });
+    });
+</script>

@@ -1,0 +1,107 @@
+﻿@model UniversityManagementMVC.Models.EnrollInACourse
+
+@{
+    ViewBag.Title = "EnrollStudentInACourse";
+}
+
+<h2>EnrollStudentInACourse</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>EnrollInACourse</h4>
+        <hr />
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.StudentId, "StudentId", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("StudentId", String.Empty)
+                @Html.ValidationMessageFor(model => model.StudentId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Name, new { @id = "studentNameId", @readonly = "readonly" })
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Email, new { @id = "studentEmailId", @readonly = "readonly" })
+                @Html.ValidationMessageFor(model => model.Email)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Department, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Department, new { @id = "studentDepartmentId", @readonly = "readonly" })
+                @Html.ValidationMessageFor(model => model.Department)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CourseId, "CourseId", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.DropDownList("CourseId", String.Empty)*@
+                <select id="CourseId"></select>
+                @Html.ValidationMessageFor(model => model.CourseId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Date, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Date)
+                @Html.ValidationMessageFor(model => model.Date)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+<script src="~/Scripts/jquery-3.0.0.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('#StudentId').change(function () {
+            var stdId = $("#StudentId").val();
+            $.getJSON("/EnrollInACourse/GetStudentName", { StudentId: stdId },
+                function (name) {
+                    $("#studentNameId").val(name);
+                });
+            $.getJSON("/EnrollInACourse/GetStudentEmail", { StudentId: stdId },
+                function (name) {
+                    $("#studentEmailId").val(name);
+                });
+            $.getJSON("/EnrollInACourse/GetStudentDepartment", { StudentId: stdId },
+                function (name) {
+                    $("#studentDepartmentId").val(name);
+                });
+        });
+        $('#StudentId').change(function () {
+            var stdId = $("#StudentId").val();
+            $("#CourseId").empty();
+            $.getJSON("/EnrollInACourse/GetCourseByStudentId", { StudentId: stdId },
+                function (course) {
+                    $("#CourseId").append('<option>' + "---Select One---" + '</option>');
+                    $.each(course, function (key, val) {
+                        $("#CourseId").append('<option value=' + val.CourseId + '>' + val.Code + '</option>');
+
+                    });
+                });
+        });
+    });
+</script>

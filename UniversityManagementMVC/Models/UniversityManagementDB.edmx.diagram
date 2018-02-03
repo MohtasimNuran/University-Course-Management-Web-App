@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="1c577d3543e84dd99e177aa17d62f8c2" Name="Diagram1" ZoomLevel="48" ShowGrid="false" SnapToGrid="true">
+        <EntityTypeShape EntityType="UniversityManagementDBModel.Course" Width="1.5" PointX="6" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="UniversityManagementDBModel.CourseAssignTeacher" Width="1.5" PointX="8.25" PointY="11.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="UniversityManagementDBModel.Department" Width="1.5" PointX="0.75" PointY="11.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="UniversityManagementDBModel.Designation" Width="1.5" PointX="0.75" PointY="8.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="UniversityManagementDBModel.EnrollInACourse" Width="1.5" PointX="11.25" PointY="15.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="UniversityManagementDBModel.Grade" Width="1.5" PointX="6" PointY="15.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="UniversityManagementDBModel.Semester" Width="1.5" PointX="3.75" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="UniversityManagementDBModel.Student" Width="1.5" PointX="3" PointY="19.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="UniversityManagementDBModel.Teacher" Width="1.5" PointX="3" PointY="11" IsExpanded="true" />
+        <AssociationConnector Association="UniversityManagementDBModel.FK_Course_Department" ManuallyRouted="false" />
+        <AssociationConnector Association="UniversityManagementDBModel.FK_Course_Semester" ManuallyRouted="false" />
+        <AssociationConnector Association="UniversityManagementDBModel.FK_CourseAssignTeacher_Course1" ManuallyRouted="false" />
+        <AssociationConnector Association="UniversityManagementDBModel.FK_EnrollInACourse_Course1" ManuallyRouted="false" />
+        <AssociationConnector Association="UniversityManagementDBModel.FK_CourseAssignTeacher_Department" ManuallyRouted="false" />
+        <AssociationConnector Association="UniversityManagementDBModel.FK_CourseAssignTeacher_Teacher" ManuallyRouted="false" />
+        <AssociationConnector Association="UniversityManagementDBModel.FK_Student_Department" ManuallyRouted="false" />
+        <AssociationConnector Association="UniversityManagementDBModel.FK_Teacher_Department" ManuallyRouted="false" />
+        <AssociationConnector Association="UniversityManagementDBModel.FK_Teacher_Designation" ManuallyRouted="false" />
+        <AssociationConnector Association="UniversityManagementDBModel.FK_EnrollInACourse_Student" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="UniversityManagementDBModel.StudentResult" Width="1.5" PointX="8.25" PointY="15.125" />
+        <AssociationConnector Association="UniversityManagementDBModel.FK_StudentResult_Course" />
+        <AssociationConnector Association="UniversityManagementDBModel.FK_StudentResult_Grade1" />
+        <AssociationConnector Association="UniversityManagementDBModel.FK_StudentResult_Student1" />
+        <EntityTypeShape EntityType="UniversityManagementDBModel.Day" Width="1.5" PointX="9" PointY="19" />
+        <EntityTypeShape EntityType="UniversityManagementDBModel.Room" Width="1.5" PointX="9" PointY="8.875" />
+        <EntityTypeShape EntityType="UniversityManagementDBModel.AllocateClassroom" Width="1.5" PointX="11.25" PointY="11" />
+        <AssociationConnector Association="UniversityManagementDBModel.FK_AllocateClassroom_Course" />
+        <AssociationConnector Association="UniversityManagementDBModel.FK_AllocateClassroom_Day" />
+        <AssociationConnector Association="UniversityManagementDBModel.FK_AllocateClassroom_Department" />
+        <AssociationConnector Association="UniversityManagementDBModel.FK_AllocateClassroom_Room" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

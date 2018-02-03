@@ -1,0 +1,146 @@
+﻿@model UniversityManagementMVC.Models.EnrollCourse
+@{
+    ViewBag.Title = "Enroll";
+}
+<style>
+    label.error {
+        color: #dc143c;
+        font-weight: bold;
+    }
+</style>
+
+<h2>Enroll Student In A Course</h2>
+@Html.AntiForgeryToken()
+<form method="POST" id="myForm" style="background-color: #2f4f4f" >
+    
+    <div class="form-horizontal">
+        <h4>Enroll Student In A Course</h4>
+        <hr>
+        @Html.ValidationSummary(true)
+        <table>
+            <tr>
+                <td>
+                    <label>Student RegNo</label>
+                </td>
+                <td>
+                    @Html.DropDownListFor(x => x.Students, Model.Students, "---Select One---", new {@id = "StudentId", @class = "form-control"})
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Name</label>
+                </td>
+                <td id="Names">
+                    @Html.TextBoxFor(model => model.Names, new {@id = "Name", @class = "form-control", @readonly = "readonly"})
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Email</label>
+                </td>
+                <td id="Emails">
+                    @Html.TextBoxFor(model => model.Emails, new {@id = "Email", @class = "form-control", @readonly = "readonly"})
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Department</label>
+                </td>
+                <td id="Departments">
+                    @Html.TextBoxFor(model => model.Departments, new {@id = "Department", @class = "form-control", @readonly = "readonly"})
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Date</label>
+                </td>
+                <td id="Dates">
+                    @Html.TextBoxFor(model => model.Dates, new {@id = "Date", @class = "form-control", @type = "date"})
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Course</label>
+                </td>
+                <td id="Course">
+                    @Html.DropDownListFor(x => x.Courses, new List<SelectListItem>(), "---Select One---", new {@id = "CourseId", @class = "form-control"})
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input id="assignButtonId" type="button" value="Assign" class="btn btn-info"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</form>
+<script src="~/Scripts/jquery-3.0.0.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+            $('#StudentId').change(function () {
+                var stdId = $("#StudentId").val();
+                $.getJSON("/EnrollInACourse/GetStudentName", { StudentId: stdId },
+                    function (name) {
+                        $("#Name").val(name);
+                    });
+                $.getJSON("/EnrollInACourse/GetStudentEmail", { StudentId: stdId },
+                    function (name) {
+                        $("#Email").val(name);
+                    });
+                $.getJSON("/EnrollInACourse/GetStudentDepartment", { StudentId: stdId },
+                    function (name) {
+                        $("#Department").val(name);
+                    });
+            });
+            $('#StudentId').change(function () {
+                var stdId = $("#StudentId").val();
+                $("#CourseId").empty();
+                $.getJSON("/EnrollInACourse/GetCourseByStudentId", { StudentId: stdId },
+                    function (course) {
+                        $("#CourseId").append('<option>' + "---Select One---" + '</option>');
+                        $.each(course, function (key, val) {
+                            $("#CourseId").append('<option value=' + val.CourseId + '>' + val.Code + '</option>');
+
+                        });
+                    });
+            });
+            $('#assignButtonId').click(function (e) {
+                window.location.reload();
+                var stdId = $("#StudentId").val();
+                var namId = $("#Name").val();
+                var mailId = $("#Email").val();
+                var deptId = $("#Department").val();
+                var courId = $("#CourseId").val();
+                var dat = $("#Date").val();
+                $.getJSON("/EnrollInACourse/EnrollStudent", { StudentId: stdId, Name: namId, Email: mailId, Department: deptId, CourseId: courId, Date: dat },
+                function (saved) {
+                    alert(saved);
+
+                });
+            });
+        $("#myForm").validate({
+            rules: {
+                StudentId: "required",
+                Date: "required",
+                CourseId: "required"
+            },
+            messages: {
+                StudentId: "Enter Student RegNo",
+                Date: "Please provide Date",
+                CourseId: "Enter Course"
+            }
+            //submitHandler: function () {
+            
+
+            //}
+
+        });
+
+
+    });
+
+</script>

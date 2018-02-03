@@ -1,0 +1,77 @@
+﻿@model UniversityManagementMVC.Models.CourseAssign
+@{
+    ViewBag.Title = "Course Statics";
+    ViewBag.Count = 4;
+}
+<div class="form-horizontal">
+    <h2>Course Assign to Teacher</h2>
+
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <hr>
+    <table>
+        <tr>
+            <td>
+                <label class="control-label col-md-2">Department</label>
+            </td>
+            <td>
+                @Html.DropDownListFor(x => x.Departments, Model.Departments, "---Select One---", new {@id = "departmentId", @class = "form-control control-label col-md-2"})
+            </td>
+        </tr>
+    </table>
+    <h3>Course Information</h3>
+    <table class="table table-hover" id="viewTable">
+        <tr>
+            <th>
+                Code
+            </th>
+            <th>
+                Name/Title
+            </th>
+            <th>
+                Semester
+            </th>
+            <th>
+                Assigned To
+            </th>
+        </tr>
+        @*@foreach (var x in ViewBag.Count)
+        {
+            <tr>
+                <td>
+                    @x.Departments
+                </td>
+                <td>
+                    @x.Teachers
+                </td>
+                <td>
+                    @x.RemainingCredit
+                </td>
+                <td>
+                    @x.CourseName
+                </td>
+            </tr>
+        }*@
+    </table>
+</div>
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+
+<script type="text/javascript">
+    
+    $(document).ready(function () {
+
+        $('#departmentId').change(function () {
+            var deptId = $("#departmentId").val();
+            $("#viewTable").empty();
+            $.getJSON("/ViewCourseStatics/GetCourseView", { departmentId: deptId },
+                function (view) {
+                    $("#viewTable").append('<table class="table table-bordered table-hover"><tr><th>' + "Code" + '</th><th>' + "Name/Title" + '</th><th>' + "Semester" + '</th><th>' + "Assigned To" + '</th></tr></table>');
+                    $.each(view, function (key, value) {
+                        $("#viewTable").append('<tr><td>' + value.Code + '</td><td>' + value.Name + '</td><td>' + value.Semester + '</td><td>' + value.teacherName + '</td></tr>');
+
+                    });
+                });
+        });
+    });
+
+</script>

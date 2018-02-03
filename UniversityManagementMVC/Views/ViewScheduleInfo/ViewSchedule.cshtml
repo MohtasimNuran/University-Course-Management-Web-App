@@ -1,0 +1,74 @@
+﻿@model UniversityManagementMVC.Models.AllocateClass
+@{
+    ViewBag.Title = "View Schedule";
+}
+<div class="form-horizontal">
+    <h2>View Class Schedule and Room Allocation Information</h2>
+
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <hr>
+    <table>
+        <tr>
+            <td>
+                <label class="control-label col-md-2">Department</label>
+            </td>
+            <td>
+                @Html.DropDownListFor(x => x.Departments, Model.Departments, "---Select One---", new { @id = "departmentId", @class = "form-control control-label col-md-2" })
+            </td>
+        </tr>
+    </table>
+    <h3>Course Information</h3>
+    <table class="table table-hover" id="viewTable">
+        <tr>
+            <th>
+                Course Code
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Schedule Info
+            </th>
+        </tr>
+        @*@foreach (var x in ViewBag.Count)
+            {
+                <tr>
+                    <td>
+                        @x.Departments
+                    </td>
+                    <td>
+                        @x.Teachers
+                    </td>
+                    <td>
+                        @x.RemainingCredit
+                    </td>
+                    <td>
+                        @x.CourseName
+                    </td>
+                </tr>
+            }*@
+    </table>
+</div>
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('#departmentId').change(function () {
+            var deptId = $("#departmentId").val();
+            $("#viewTable").empty();
+            $.getJSON("/ViewScheduleInfo/GetSchedule", { departmentId: deptId },
+                function (secondaryViewOrdereds) {
+                    $("#viewTable").append('<table class="table table-bordered table-hover"><tr><th>' + "Course Code" + '</th><th>' + "Name" + '</th><th>' + "Schedule Info" + '</th></tr></table>');
+                    $.each(secondaryViewOrdereds, function (key, value) {
+                        //alert(value.ScheduleList);
+                        //$("#viewTable").append('<tr><td>' + value.Code + '</td><td>' + value.Name + '</td><td>'+"R.No: "+value.Room +", "+ value.Day +", "+ value.Frm+ " - "+value.Too+'</td></tr>');
+                        $("#viewTable").append('<tr><td>' + value.Code + '</td><td>' + value.Name + '</td><td>' + value.ScheduleList + '</td></tr>');
+                    });
+                });
+        });
+    });
+
+</script>
